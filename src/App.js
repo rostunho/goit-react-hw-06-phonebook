@@ -6,25 +6,41 @@ import ContactForm from 'components/ContactForm/ContactForm';
 import Title from 'components/Title/Title';
 import Filter from 'components/Filter/Filter';
 import ContactList from 'components/ContactList/ContactList';
-import defaultContacts from './database/default-contacts.json';
+// import defaultContacts from './database/default-contacts.json';
+
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  filterAction,
+  addNewContactAction,
+  removeContactAction,
+} from './redux/contacts/contacts-actions';
 
 function App() {
-  const [contacts, setContacts] = useState(() => {
-    const unparsedContacts = window.localStorage.getItem('contacts');
-    const savedContacts = JSON.parse(unparsedContacts);
+  // const [contacts, setContacts] = useState(() => {
+  //   const unparsedContacts = window.localStorage.getItem('contacts');
+  //   const savedContacts = JSON.parse(unparsedContacts);
 
-    return savedContacts ?? defaultContacts;
-  });
+  //   return savedContacts ?? defaultContacts;
+  // });
 
-  const [filter, setFilter] = useState('');
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    window.localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
+  const contacts = useSelector(state => state.contacts.items);
+  console.log(contacts);
+
+  // const [filter, setFilter] = useState('');
+
+  const filter = useSelector(state => state.contacts.filter);
+  console.log('there is filter', filter);
+
+  // useEffect(() => {
+  //   window.localStorage.setItem('contacts', JSON.stringify(contacts));
+  // }, [contacts]);
 
   function handleFilter(event) {
     const { value } = event.target;
-    setFilter(value);
+    // setFilter(value);
+    dispatch(filterAction(value));
   }
 
   function addNewContact(newContact) {
@@ -35,15 +51,18 @@ function App() {
     if (unUniqueContact) {
       toast.error(`"${newContact.name}" is already in contacts`);
     } else {
-      setContacts(prevContacts => [newContact, ...prevContacts]);
+      // setContacts(prevContacts => [newContact, ...prevContacts]);
+      dispatch(addNewContactAction(newContact));
       toast.success(`"${newContact.name}" added to your contacts`);
     }
   }
 
   function removeContact(contactId) {
-    setContacts(prevContacts =>
-      prevContacts.filter(contact => contact.id !== contactId),
-    );
+    // setContacts(prevContacts =>
+    //   prevContacts.filter(contact => contact.id !== contactId),
+    // );
+
+    dispatch(removeContactAction(contactId));
   }
 
   const normalizedFilter = filter.toLowerCase();

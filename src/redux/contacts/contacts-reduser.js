@@ -2,17 +2,18 @@ import { createReducer, combineReducers } from '@reduxjs/toolkit';
 import {
   addNewContactAction,
   removeContactAction,
-  contactsFilterAction,
+  filterAction,
 } from './contacts-actions';
+import defaultContacts from '../../database/default-contacts.json';
 
-const itemsReducer = createReducer([], {
+const itemsReducer = createReducer(defaultContacts, {
   [addNewContactAction]: (state, { payload }) => [payload, ...state],
   [removeContactAction]: (state, { payload }) =>
     state.filter(({ id }) => id !== payload),
 });
 
 const filterReducer = createReducer('', {
-  [contactsFilterAction]: (_, { payload }) => payload,
+  [filterAction]: (_, { payload }) => payload,
 });
 
 export default combineReducers({
