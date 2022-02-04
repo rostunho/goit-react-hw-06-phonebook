@@ -1,7 +1,17 @@
 import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
+import { filterAction } from '../../redux/contacts/contacts-actions';
 import { FilterBox, FilterInput } from './Filter.styled';
 
-function Filter({ filter, handleFilter, placeholder }) {
+function Filter({ placeholder }) {
+  const filter = useSelector(state => state.contacts.filter);
+  const dispatch = useDispatch();
+
+  function handleFilter(event) {
+    const { value } = event.target;
+    dispatch(filterAction(value));
+  }
+
   return (
     <FilterBox>
       <FilterInput
@@ -16,9 +26,7 @@ function Filter({ filter, handleFilter, placeholder }) {
 }
 
 Filter.propTypes = {
-  filter: PropTypes.string.isRequired,
   placeholder: PropTypes.string.isRequired,
-  handleFilter: PropTypes.func.isRequired,
 };
 
 export default Filter;

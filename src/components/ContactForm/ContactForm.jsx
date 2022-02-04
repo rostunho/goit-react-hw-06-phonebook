@@ -1,13 +1,19 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
+import toast from 'react-hot-toast';
+import { useSelector, useDispatch } from 'react-redux';
+import { addNewContactAction } from '../../redux/contacts/contacts-actions';
 import { Form, Label, Input, AddButton } from './ContactForm.styled';
 
-function ContactForm({ addNewContact }) {
+function ContactForm() {
   const [newContact, setNewContact] = useState({
     name: '',
     number: '',
   });
+
+  const contacts = useSelector(state => state.contacts.items);
+
+  const dispatch = useDispatch();
 
   function handleInput(event) {
     const { name, value } = event.target;
@@ -26,6 +32,19 @@ function ContactForm({ addNewContact }) {
 
     addNewContact(contactUpdating);
     setNewContact({ name: '', number: '' });
+  }
+
+  function addNewContact(newContact) {
+    const unUniqueContact = contacts.some(
+      contact => contact.name.toLowerCase() === newContact.name.toLowerCase(),
+    );
+
+    if (unUniqueContact) {
+      toast.error(`"${newContact.name}" is already in contacts`);
+    } else {
+      dispatch(addNewContactAction(newContact));
+      toast.success(`"${newContact.name}" added to your contacts`);
+    }
   }
 
   return (
@@ -59,9 +78,5 @@ function ContactForm({ addNewContact }) {
     </Form>
   );
 }
-
-ContactForm.propTypes = {
-  addNewContact: PropTypes.func.isRequired,
-};
 
 export default ContactForm;
