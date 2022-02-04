@@ -5,7 +5,7 @@ import {
   contactsFilterAction,
 } from './contacts-actions';
 
-const contactsReducer = createReducer([], {
+const itemsReducer = createReducer([], {
   [addNewContactAction]: (state, { payload }) => [payload, ...state],
   [removeContactAction]: (state, { payload }) =>
     state.filter(({ id }) => id !== payload),
@@ -16,6 +16,6 @@ const filterReducer = createReducer('', {
 });
 
 export default combineReducers({
-  contacts: contactsReducer,
+  items: itemsReducer,
   filter: filterReducer,
 });
